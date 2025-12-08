@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: authenticator
+  main:
+    banner-mode: off
+
+  datasource:
+    url: jdbc:mariadb://${MARIADB_SERVER_URI}:3306/MEGSI
+    username: root
+    password: sky
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    defer-datasource-initialization: false
+    open-in-view: false
+
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER_URI}:9092
+    template:
+      default-topic: REGISTRATION.MESSAGE.1
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: aluno.uminho.megsi@gmail.com
+    password: awhxghptidnaprkw
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+hibernate:
+  dialect: org.hibernate.dialect.MariaDBDialect
+
+logging:
+  level:
+    root: ${ROOT_LOG_LEVEL:INFO}
+    pt.uminho: ${APP_LOG_LEVEL:DEBUG}
+
+app:
+  jwt_expiration: 3600
+  jwt_private_key: classpath:private.pem
+  jwt_public_key: classpath:public.pem
+  kafka_registration_topic: REGISTRATION.MESSAGE.1
+  kafka_registration_groupId: REGISTRATION.MESSAGE.GROUP.ID
+  api_host: localhost:8080
