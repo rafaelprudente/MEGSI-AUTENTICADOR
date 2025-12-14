@@ -24,11 +24,10 @@ import pt.uminho.megsi.authenticator.application.port.Authenticator;
 import pt.uminho.megsi.authenticator.application.port.UserPersistence;
 import pt.uminho.megsi.authenticator.domain.enummerator.Roles;
 import pt.uminho.megsi.authenticator.domain.exception.BusinessException;
+import pt.uminho.megsi.authenticator.domain.exception.NotFoundException;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -89,7 +88,7 @@ public class AuthenticatorService implements Authenticator {
             throw new BusinessException(String.join(" ", validator.getMessages(result)));
         }
 
-        UserDto user = userPersistence.findUserByHash(changePasswordDto.getHash()).orElseThrow();
+        UserDto user = userPersistence.findUserByHash(changePasswordDto.getHash()).orElseThrow(() -> new NotFoundException("Change Password Key Not Found."));
 
         user.setPassword(passwordEncoder.encode(changePasswordDto.getPassword()));
         user.setChangePasswordHash(null);
