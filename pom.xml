@@ -27,7 +27,7 @@
         <org.passay.version>1.6.6</org.passay.version>
         <spring-cloud.version>2025.1.0</spring-cloud.version>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -193,9 +193,9 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
                 <configuration>
-                    <url>jdbc:mariadb://localhost:3306/MEGSI</url>
+                    <url>jdbc:mariadb://192.168.56.214:3306/MEGSI</url>
                     <user>root</user>
-                    <password>sky</password>
+                    <password>uminho</password>
                     <schemas>
                         <schema>MEGSI</schema>
                     </schemas>
