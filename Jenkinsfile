@@ -64,7 +64,6 @@ spec:
             /kaniko/executor \
               --context $WORKSPACE \
               --dockerfile Dockerfile \
-              --destination $REGISTRY/$PROJECT/$IMAGE_NAME:$IMAGE_TAG \
               --destination $REGISTRY/$PROJECT/$IMAGE_NAME:latest \
               --insecure \
               --skip-tls-verify

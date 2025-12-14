@@ -28,18 +28,15 @@ public class SecurityConfiguration {
     private RSAPrivateKey rsaPrivateKey;
     @Value("${app.jwt_public_key}")
     private RSAPublicKey rsaPublicKey;
+    @Value("${app.permitRequestMatchers}")
+    private String[] permitRequestMatchers;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/authenticate",
-                                "/register",
-                                "/pages/**",
-                                "/actuator/**",
-                                "/swagger/**").permitAll()
+                        .requestMatchers(permitRequestMatchers).permitAll()
                         .anyRequest()
                         .authenticated())
                 .httpBasic(Customizer.withDefaults()).oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()));
