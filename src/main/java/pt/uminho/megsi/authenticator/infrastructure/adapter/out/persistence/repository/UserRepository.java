@@ -2,7 +2,6 @@ package pt.uminho.megsi.authenticator.infrastructure.adapter.out.persistence.rep
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import pt.uminho.megsi.authenticator.application.dto.UserDto;
 import pt.uminho.megsi.authenticator.infrastructure.adapter.out.persistence.entity.UserEntity;
 
 import java.util.Optional;

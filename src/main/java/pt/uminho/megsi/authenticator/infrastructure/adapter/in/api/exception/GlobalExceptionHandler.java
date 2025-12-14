@@ -24,6 +24,9 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    public static final String BUSINESS_RULE_VIOLATION = "Business rule violation";
+    public static final String ERROR_ID = "errorId";
+
     @ExceptionHandler({EntityNotFoundException.class, NotFoundException.class})
     public ProblemDetail handleNotFound(RuntimeException ex, WebRequest request) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
@@ -61,7 +64,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ProblemDetail handleBusiness(BusinessException ex, WebRequest request) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setTitle("Business rule violation");
+        problem.setTitle(BUSINESS_RULE_VIOLATION);
         problem.setDetail(ex.getMessage());
         problem.setInstance(URI.create(((ServletWebRequest) request).getRequest().getRequestURI()));
 
@@ -72,7 +75,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ProblemDetail handleHttpMessageNotReadable(HttpMessageNotReadableException ex, WebRequest request) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setTitle("Business rule violation");
+        problem.setTitle(BUSINESS_RULE_VIOLATION);
 
         if (ex.getMessage().contains("Required request body is missing")) {
             problem.setDetail("Required request body is missing");
@@ -81,7 +84,7 @@ public class GlobalExceptionHandler {
         }
 
         problem.setInstance(URI.create(((ServletWebRequest) request).getRequest().getRequestURI()));
-        problem.setProperty("errorId", UUID.randomUUID().toString());
+        problem.setProperty(ERROR_ID, UUID.randomUUID().toString());
 
         log.error(ex.getMessage(), ex);
         return problem;
@@ -90,7 +93,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleGeneric(MethodArgumentNotValidException ex, WebRequest request) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setTitle("Business rule violation");
+        problem.setTitle(BUSINESS_RULE_VIOLATION);
 
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
@@ -101,7 +104,7 @@ public class GlobalExceptionHandler {
                 .map(e -> e.getKey() + ": " + e.getValue())
                 .collect(Collectors.joining(" ")));
         problem.setInstance(URI.create(((ServletWebRequest) request).getRequest().getRequestURI()));
-        problem.setProperty("errorId", UUID.randomUUID().toString());
+        problem.setProperty(ERROR_ID, UUID.randomUUID().toString());
 
         log.error(ex.getMessage(), ex);
         return problem;
@@ -113,7 +116,7 @@ public class GlobalExceptionHandler {
         problem.setTitle("Unexpected error");
         problem.setDetail("Contact support");
         problem.setInstance(URI.create(((ServletWebRequest) request).getRequest().getRequestURI()));
-        problem.setProperty("errorId", UUID.randomUUID().toString());
+        problem.setProperty(ERROR_ID, UUID.randomUUID().toString());
 
         log.error(ex.getMessage(), ex);
         return problem;

@@ -18,6 +18,8 @@ import java.io.File;
 @Service
 @RequiredArgsConstructor
 public class MessageService {
+    public static final String ERROR_WHILE_SENDING_MAIL = "Error while sending mail.";
+    public static final String MAIL_SENT_SUCCESSFULLY = "Mail Sent Successfully.";
     private final JavaMailSender javaMailSender;
 
     @KafkaListener(topics = "REGISTRATION.MESSAGE.1", groupId = "REGISTRATION.MESSAGE.GROUP.ID", containerFactory = "emailKafkaListenerContainerFactory")
@@ -37,9 +39,9 @@ public class MessageService {
 
             javaMailSender.send(mimeMessage);
 
-            log.info("Mail Sent Successfully.");
+            log.info(MAIL_SENT_SUCCESSFULLY);
         } catch (Exception e) {
-            log.error("Error while sending mail.", e);
+            log.error(ERROR_WHILE_SENDING_MAIL, e);
         }
     }
 
@@ -54,9 +56,9 @@ public class MessageService {
 
             javaMailSender.send(mailMessage);
 
-            log.info("Mail Sent Successfully.");
+            log.info(MAIL_SENT_SUCCESSFULLY);
         } catch (Exception e) {
-            log.error("Error while sending mail.", e);
+            log.error(ERROR_WHILE_SENDING_MAIL, e);
         }
     }
 
@@ -76,9 +78,9 @@ public class MessageService {
 
             javaMailSender.send(mimeMessage);
 
-            log.info("Mail Sent Successfully.");
+            log.info(MAIL_SENT_SUCCESSFULLY);
         } catch (MessagingException e) {
-            log.error("Error while sending mail.", e);
+            log.error(ERROR_WHILE_SENDING_MAIL, e);
         }
     }
 }

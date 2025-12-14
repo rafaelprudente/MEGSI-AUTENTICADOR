@@ -112,6 +112,8 @@ public class AuthenticatorService implements Authenticator {
                             .replace("${email}", newUser.getEmail())
                             .replace("${confirmationLink}", "http://" + apiHost + "/pages/change-password?hash=" + newUser.getChangePasswordHash());
 
+            log.debug("Sending email: [{}]", userRegisteredEmailTemplate);
+
             kafkaService.send(registrationTopic, EmailDto.builder()
                     .sender("Authentication Service <aluno.uminho.megsi@gmail.com>")
                     .recipient(newUser.getEmail())
@@ -120,7 +122,7 @@ public class AuthenticatorService implements Authenticator {
                     .build());
 
         } catch (Exception e) {
-            log.error("Error reading template: " + e.getMessage(), e);
+            log.error("Error reading template: {}", e.getMessage(), e);
         }
     }
 
