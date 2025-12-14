@@ -1,13 +1,14 @@
 spring:
-  application:
-    name: authenticator
   main:
     banner-mode: off
+  application:
+    name: megsi-authenticator
+  config.import: optional:configserver:${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
 
   datasource:
     url: jdbc:mariadb://${MARIADB_SERVER_URI}:3306/MEGSI
     username: root
-    password: sky
+    password: ${MYSQL_ROOT_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
@@ -26,7 +27,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: aluno.uminho.megsi@gmail.com
-    password: awhxghptidnaprkw
+    password: ${EMAIL_PASSWORD}
     protocol: smtp
     properties:
       mail:
