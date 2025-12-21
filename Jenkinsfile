@@ -3,7 +3,7 @@ properties([
     booleanParam(
       name: 'APPLY_MIGRATIONS',
       defaultValue: false,
-      description: 'Buildar e publicar a imagem Docker?'
+      description: 'Apply migrations to database?'
     )
   ])
 ])
@@ -110,6 +110,18 @@ spec:
     }
     failure {
       echo "Falha no pipeline."
+    }
+  }
+
+  stage('Restart Application') {
+    steps {
+      container('kubectl') {
+        sh '''
+          kubectl scale deployment megsi-authenticator -n uminho --replicas=0
+          sleep 10
+          kubectl scale deployment megsi-authenticator -n uminho --replicas=2
+        '''
+      }
     }
   }
 }
