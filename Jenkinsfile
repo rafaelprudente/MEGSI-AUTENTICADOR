@@ -1,13 +1,3 @@
-properties([
-  parameters([
-    booleanParam(
-      name: 'APPLY_MIGRATIONS',
-      defaultValue: false,
-      description: 'Apply migrations to database?'
-    )
-  ])
-])
-
 pipeline {
   agent {
     kubernetes {
@@ -17,22 +7,24 @@ kind: Pod
 spec:
   restartPolicy: Never
   containers:
-      - name: maven
-        image: maven:3.9.9-eclipse-temurin-21
-        command:
-          - cat
-        tty: true
+    - name: maven
+      image: maven:3.9.9-eclipse-temurin-21
+      command: ["cat"]
+      tty: true
 
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
-        command:
-          - /busybox/sh
-        args:
-          - -c
-          - sleep 999999
-        volumeMounts:
-          - name: docker-config
-            mountPath: /kaniko/.docker
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:debug
+      command: ["/busybox/sh"]
+      args: ["-c", "sleep 999999"]
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
+
+    - name: kubectl
+      image: bitnami/kubectl:1.30
+      command: ["cat"]
+      tty: true
+
   volumes:
     - name: docker-config
       secret:
@@ -82,6 +74,7 @@ spec:
             /kaniko/executor \
               --context $WORKSPACE \
               --dockerfile Dockerfile \
+              --destination $REGISTRY/$PROJECT/$IMAGE_NAME:$IMAGE_TAG \
               --destination $REGISTRY/$PROJECT/$IMAGE_NAME:latest \
               --insecure \
               --skip-tls-verify
@@ -101,6 +94,17 @@ spec:
       }
     }
 
+    stage('Restart Application') {
+      steps {
+        container('kubectl') {
+          sh '''
+            kubectl scale deployment megsi-authenticator -n uminho --replicas=0
+            sleep 10
+            kubectl scale deployment megsi-authenticator -n uminho --replicas=2
+          '''
+        }
+      }
+    }
   }
 
   post {
@@ -110,18 +114,6 @@ spec:
     }
     failure {
       echo "Falha no pipeline."
-    }
-  }
-
-  stage('Restart Application') {
-    steps {
-      container('kubectl') {
-        sh '''
-          kubectl scale deployment megsi-authenticator -n uminho --replicas=0
-          sleep 10
-          kubectl scale deployment megsi-authenticator -n uminho --replicas=2
-        '''
-      }
     }
   }
 }
