@@ -1,3 +1,13 @@
+properties([
+  parameters([
+    booleanParam(
+      name: 'BUILD_AND_PUSH_IMAGE',
+      defaultValue: true,
+      description: 'Buildar e publicar a imagem Docker?'
+    )
+  ])
+])
+
 pipeline {
   agent {
     kubernetes {
