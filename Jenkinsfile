@@ -22,8 +22,9 @@ spec:
 
     - name: kubectl
       image: registry.k8s.io/kubectl:v1.31.4
-      command: ["kubectl"]
-      args: ["version"]
+      command: ["/bin/sh"]
+      args: ["-c", "sleep infinity"]
+      tty: true
 
   volumes:
     - name: docker-config
