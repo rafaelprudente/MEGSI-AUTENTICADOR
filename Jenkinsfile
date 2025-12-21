@@ -6,6 +6,7 @@ apiVersion: v1
 kind: Pod
 spec:
   restartPolicy: Never
+  label: 'megsi-authenticator-ci'
   serviceAccount: 'jenkins-admin'
   containers:
     - name: maven
