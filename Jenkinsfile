@@ -34,6 +34,15 @@ spec:
     }
   }
 
+  /* ✅ CHECKBOX */
+  parameters {
+    booleanParam(
+      name: 'BUILD_AND_PUSH_IMAGE',
+      defaultValue: true,
+      description: 'Buildar e publicar a imagem Docker?'
+    )
+  }
+
   environment {
     REGISTRY   = "192.168.56.214:30610"
     PROJECT    = "uminho"
@@ -58,6 +67,10 @@ spec:
     }
 
     stage('Build & Push Image (Kaniko)') {
+      /* ✅ CONDICIONAL */
+      when {
+        expression { params.BUILD_AND_PUSH_IMAGE }
+      }
       steps {
         container('kaniko') {
           sh '''
@@ -75,11 +88,11 @@ spec:
 
   post {
     success {
-      echo "Imagem criada com sucesso:"
-      echo "$REGISTRY/$PROJECT/$IMAGE_NAME:$IMAGE_TAG"
+      echo "Pipeline executado com sucesso."
+      echo "Imagem: $REGISTRY/$PROJECT/$IMAGE_NAME:$IMAGE_TAG"
     }
     failure {
-      echo "Falha no build da imagem."
+      echo "Falha no pipeline."
     }
   }
 }

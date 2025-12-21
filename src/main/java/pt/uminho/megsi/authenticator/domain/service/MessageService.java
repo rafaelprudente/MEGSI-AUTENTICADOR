@@ -28,6 +28,8 @@ public class MessageService {
     }
 
     public void sendSimpleHtmlMail(EmailDto details) {
+        log.debug("Start - void sendSimpleHtmlMail(EmailDto details)");
+
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
@@ -42,6 +44,8 @@ public class MessageService {
             log.info(MAIL_SENT_SUCCESSFULLY);
         } catch (Exception e) {
             log.error(ERROR_WHILE_SENDING_MAIL, e);
+        } finally {
+            log.debug("End - void sendSimpleHtmlMail(EmailDto details)");
         }
     }
 
