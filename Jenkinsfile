@@ -21,7 +21,7 @@ spec:
           mountPath: /kaniko/.docker
 
     - name: kubectl
-      image: registry.k8s.io/kubectl
+      image: registry.k8s.io/kubectl:v1.31.4
       command: ["cat"]
       tty: true
 
