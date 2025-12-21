@@ -93,13 +93,20 @@ spec:
       steps {
         container('maven') {
           sh '''
-            curl -LO https://dl.k8s.io/release/v1.31.4/bin/linux/amd64/kubectl
+            ARCH=$(uname -m)
+            case "$ARCH" in
+              x86_64) ARCH=amd64 ;;
+              aarch64) ARCH=arm64 ;;
+              arm64) ARCH=arm64 ;;
+              *) echo "Arquitetura não suportada: $ARCH"; exit 1 ;;
+            esac
+
+            curl -LO https://dl.k8s.io/release/v1.31.4/bin/linux/$ARCH/kubectl
             install -m 0755 kubectl /usr/local/bin/kubectl
 
             kubectl version --client
-            kubectl scale deployment megsi-authenticator -n uminho --replicas=0
-            sleep 10
-            kubectl scale deployment megsi-authenticator -n uminho --replicas=1
+            kubectl rollout restart deployment megsi-authenticator -n uminho
+            kubectl rollout status deployment megsi-authenticator -n uminho
           '''
         }
       }
