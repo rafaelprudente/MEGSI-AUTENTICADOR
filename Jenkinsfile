@@ -104,6 +104,7 @@ spec:
         }
       }
     }
+ }
 
   post {
     success {
