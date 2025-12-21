@@ -96,7 +96,7 @@ spec:
       }
       steps {
         container('maven') {
-          sh 'mvn clean flyway:migrate -Dflyway.configFiles=flywayConfig.conf'
+          sh 'mvn -ntp flyway:migrate -Dflyway.configFiles=flywayConfig.conf'
         }
       }
     }
