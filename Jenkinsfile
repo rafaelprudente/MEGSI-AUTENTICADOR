@@ -6,7 +6,7 @@ apiVersion: v1
 kind: Pod
 spec:
   restartPolicy: Never
-  serviceAccount: 'jenkins-admin',
+  serviceAccount: 'jenkins-admin'
   containers:
     - name: maven
       image: maven:3.9.9-eclipse-temurin-21
