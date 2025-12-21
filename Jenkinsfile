@@ -20,12 +20,6 @@ spec:
         - name: docker-config
           mountPath: /kaniko/.docker
 
-    - name: kubectl
-      image: lachlanevenson/k8s-kubectl:v1.31.4
-      command: ["/bin/sh"]
-      args: ["-c", "sleep infinity"]
-      tty: true
-
   volumes:
     - name: docker-config
       secret:
@@ -97,16 +91,19 @@ spec:
 
     stage('Restart Application') {
       steps {
-        container('kubectl') {
+        container('maven') {
           sh '''
+            curl -LO https://dl.k8s.io/release/v1.31.4/bin/linux/amd64/kubectl
+            install -m 0755 kubectl /usr/local/bin/kubectl
+
+            kubectl version --client
             kubectl scale deployment megsi-authenticator -n uminho --replicas=0
             sleep 10
-            kubectl scale deployment megsi-authenticator -n uminho --replicas=2
+            kubectl scale deployment megsi-authenticator -n uminho --replicas=1
           '''
         }
       }
     }
-  }
 
   post {
     success {
