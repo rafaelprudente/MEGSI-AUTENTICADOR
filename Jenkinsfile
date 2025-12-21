@@ -1,8 +1,8 @@
 properties([
   parameters([
     booleanParam(
-      name: 'BUILD_AND_PUSH_IMAGE',
-      defaultValue: true,
+      name: 'APPLY_MIGRATIONS',
+      defaultValue: false,
       description: 'Buildar e publicar a imagem Docker?'
     )
   ])
@@ -44,12 +44,11 @@ spec:
     }
   }
 
-  /* ✅ CHECKBOX */
   parameters {
     booleanParam(
-      name: 'BUILD_AND_PUSH_IMAGE',
-      defaultValue: true,
-      description: 'Buildar e publicar a imagem Docker?'
+      name: 'APPLY_MIGRATIONS',
+      defaultValue: false,
+      description: 'Apply migrations to database?'
     )
   }
 
@@ -77,10 +76,6 @@ spec:
     }
 
     stage('Build & Push Image (Kaniko)') {
-      /* ✅ CONDICIONAL */
-      when {
-        expression { params.BUILD_AND_PUSH_IMAGE }
-      }
       steps {
         container('kaniko') {
           sh '''
@@ -94,6 +89,18 @@ spec:
         }
       }
     }
+
+    stage('Apply Migrations') {
+      when {
+        expression { params.APPLY_MIGRATIONS }
+      }
+      steps {
+        container('maven') {
+          sh 'mvn clean flyway:migrate -Dflyway.configFiles=flywayConfig.conf'
+        }
+      }
+    }
+
   }
 
   post {
