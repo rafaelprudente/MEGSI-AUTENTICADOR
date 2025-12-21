@@ -20,6 +20,12 @@ spec:
         - name: docker-config
           mountPath: /kaniko/.docker
 
+    - name: kubectl
+      image: lachlanevenson/k8s-kubectl:v1.31.4
+      command: ["/bin/sh"]
+      args: ["-c", "sleep infinity"]
+      tty: true
+
   volumes:
     - name: docker-config
       secret:
