@@ -1,6 +1,7 @@
 package pt.uminho.megsi.authenticator.domain.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtService {
@@ -36,7 +38,7 @@ public class JwtService {
         }
 
         Instant expiresAt = Instant.now().plus(jwtExpiration, ChronoUnit.SECONDS);
-        return AuthenticationDto.builder().token(jwtEncoder.encode(JwtEncoderParameters.from(JwtClaimsSet.builder()
+        AuthenticationDto authenticationDto = AuthenticationDto.builder().token(jwtEncoder.encode(JwtEncoderParameters.from(JwtClaimsSet.builder()
                 .issuer("jsdp-security")
                 .issuedAt(Instant.now())
                 .expiresAt(expiresAt)
@@ -44,5 +46,9 @@ public class JwtService {
                 .claim("id", userId)
                 .claim("scope", authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(" ")))
                 .build())).getTokenValue()).expiresIn(expiresAt.getEpochSecond()).build();
+
+        log.info("Generated JWT token to: {}", authentication.getName());
+
+        return authenticationDto;
     }
 }

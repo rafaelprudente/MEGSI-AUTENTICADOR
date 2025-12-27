@@ -6,7 +6,7 @@ spring:
   config.import: optional:configserver:${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
 
   datasource:
-    url: jdbc:mariadb://${MARIADB_SERVER_URI}:30306/MEGSI
+    url: jdbc:mariadb://${MARIADB_SERVER_URI:localhost}:3306/MEGSI
     username: root
     password: ${MYSQL_ROOT_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
@@ -19,7 +19,7 @@ spring:
     open-in-view: false
 
   kafka:
-    bootstrap-servers: ${KAFKA_SERVER_URI}:9094
+    bootstrap-servers: ${KAFKA_SERVER_URI:localhost:9092}
     template:
       default-topic: REGISTRATION.MESSAGE.1
 
@@ -41,7 +41,7 @@ hibernate:
 
 logging:
   level:
-    root: ${ROOT_LOG_LEVEL:DEBUG}
+    root: ${ROOT_LOG_LEVEL:INFO}
     pt.uminho: ${APP_LOG_LEVEL:DEBUG}
 
 app:
