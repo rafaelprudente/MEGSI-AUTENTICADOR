@@ -15,7 +15,7 @@ docker run -d \
   --name megsi-config-server \
   --network megsi-net \
   -p 8888:8888 \
-  -v /Users/rafaelrolimprudentedossantos/work/studies/mestrado/INFRA/MEGSI-CONFIG-SERVER-DATA:/srv/configuration-server-fs \
+  -v /srv/configuration-server-fs:/srv/configuration-server-fs \
   rafaelrpsantos/megsi-config-server-fs:latest
 ```
 
